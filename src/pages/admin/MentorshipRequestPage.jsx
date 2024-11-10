@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Form, Input, Button, Select, message, Table, Modal } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import AdminLayout from '../../layouts/AdminLayout';
 
 const { TextArea } = Input;
@@ -70,24 +71,36 @@ const MentorshipRequestPage = () => {
       key: 'action',
       render: (_, request) => (
         <>
-          <Button onClick={() => handleEdit(request)}>Chọn Mentor</Button>
-          <Button danger onClick={() => handleDelete(request.id)}>Xóa</Button>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(request)}
+            style={{ marginRight: 8 }}
+            type="default"
+            shape="circle"
+          />
+          <Button
+            icon={<DeleteOutlined />}
+            danger
+            onClick={() => handleDelete(request.id)}
+            type="default"
+            shape="circle"
+          />
         </>
       ),
     },
   ];
 
   return (
-    <AdminLayout>
+    <AdminLayout headerName="Yêu cầu hướng dẫn">
       <Layout.Content style={{ padding: '24px' }}>
         <Button type="primary" onClick={() => setIsModalVisible(true)}>
-          Gửi yêu cầu cho Mentor
+          Gửi Yêu cầu
         </Button>
 
         <Table columns={columns} dataSource={requests} rowKey="id" style={{ marginTop: 24 }} />
 
         <Modal
-          title={editingRequest ? "Chọn Mentor" : "Tạo Yêu cầu"}
+          title={editingRequest ? "Chỉnh sửa Yêu cầu" : "Tạo Yêu cầu"}
           visible={isModalVisible}
           onCancel={() => {
             setIsModalVisible(false);
@@ -100,7 +113,7 @@ const MentorshipRequestPage = () => {
             <Form.Item
               label="Tin nhắn yêu cầu"
               name="requestMessage"
-              rules={[{ message: 'Vui lòng nhập tin nhắn yêu cầu' }]}
+              rules={[{ required: true, message: 'Vui lòng nhập tin nhắn yêu cầu' }]}
             >
               <TextArea rows={4} placeholder="Mô tả yêu cầu hướng dẫn của bạn ở đây..." />
             </Form.Item>
@@ -126,18 +139,6 @@ const MentorshipRequestPage = () => {
                 <Option value="Đang chờ">Đang chờ</Option>
                 <Option value="Đã phê duyệt">Đã phê duyệt</Option>
                 <Option value="Đã từ chối">Đã từ chối</Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Chọn Mentor"
-              name="mentor"
-              rules={[{ required: true, message: 'Vui lòng chọn Mentor' }]}
-            >
-              <Select placeholder="Chọn Mentor">
-                <Option value="Alex">Alex</Option>
-                <Option value="Joe">Joe</Option>
-                <Option value="Biden">Biden</Option>
               </Select>
             </Form.Item>
 
