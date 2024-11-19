@@ -92,13 +92,13 @@ const CreatePostPage = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             name="views"
             label="Lượt Xem"
             rules={[{ type: 'number', min: 0, message: 'Lượt xem phải là số không âm!' }]}
           >
             <InputNumber min={0} placeholder="Nhập lượt xem" style={{ width: '100%' }} />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item label="Riêng Tư">
             <Switch checked={isPrivate} onChange={setIsPrivate} />
