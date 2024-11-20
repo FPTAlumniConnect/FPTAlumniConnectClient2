@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import UserLayout from '../../layouts/UserLayout';
 import PostService from '../../services/PostService';
 import CommentService from '../../services/CommentService'; // Import CommentService
-
 const { Content } = Layout;
 const { Title, Paragraph, Text } = Typography;
 

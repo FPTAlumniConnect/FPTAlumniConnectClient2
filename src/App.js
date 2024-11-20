@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 import DashboardPage from "./pages/admin/DashboardPage";
 import UserPage from "./pages/admin/UserPage";
@@ -20,17 +21,24 @@ import CVPage from "./pages/user/CVPage";
 import CreateJobPostPage from "./pages/user/CreateJobPostPage";
 import CreateEventPage from "./pages/user/CreateEventPage";
 import LoginPage from "./pages/user/LoginPage";
+import HomePageV2 from "./pages/user/HomePageV2";
+import ListPostPage from "./pages/user/ListPostPage";
+import ListEventPage from "./pages/user/ListEventPage";
+import EventDetailsPageV2 from "./pages/user/EventDetailsPageV2";
+import PostDetailsPageV2 from "./pages/user/PostDetailsPageV2";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePageV2 />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/post/:id" element={<PostDetail />} />
+        <Route path="/list-post" element={<ListPostPage />} />
+        <Route path="/list-event" element={<ListEventPage />} />
+        <Route path="/post/:id" element={<PostDetailsPageV2 />} />
         <Route path="/create-post" element={<CreatePostPage />} />
         <Route path="/user-event" element={<UserEventPage />} />
-        <Route path="/event/:id" element={<EventDetailsPage />} />
+        <Route path="/event/:id" element={<EventDetailsPageV2 />} />
         <Route path="/user-job-post" element={<UserJobPostPage />} />
         <Route path="/create-event" element={<CreateEventPage />} />
         <Route path="/user-job-post/:id" element={<UserJobPostDetailsPage />} />
