@@ -5,6 +5,7 @@ import HeaderComponent from "../../components/common/HeaderComponent";
 import FooterComponent from "../../components/common/FooterComponent";
 import { Visibility, AccessTime, Person } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { PagingListItem } from "../../components/common/PagingListItem";
 
 export const MainBodyListItem = ({ item, onClick }) => {
   const styles = {
@@ -125,17 +126,7 @@ function ListPostPage() {
               {currentItem.map((item, index) => (
                 <MainBodyListItem key={index} onClick={handleShowPostDetail} item={item} />
               ))}
-              <Pagination className="mt-3 justify-content-end">
-                {[...Array(totalPages).keys()].map((page) => (
-                  <Pagination.Item
-                    key={page + 1}
-                    active={page + 1 === currentPage}
-                    onClick={() => handlePageChange(page + 1)}
-                  >
-                    {page + 1}
-                  </Pagination.Item>
-                ))}
-              </Pagination>
+              <PagingListItem handlePageChange={handlePageChange} currentPage={currentPage} totalPages={totalPages}/>
             </Col>
           </Row>
         </Container>
