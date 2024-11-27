@@ -6,6 +6,7 @@
     "@ant-design/charts": "^2.2.3",
     "@ant-design/icons": "^5.5.1",
     "@antv/g2": "^5.2.7",
+    "@antv/util": "^3.3.10",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.7",

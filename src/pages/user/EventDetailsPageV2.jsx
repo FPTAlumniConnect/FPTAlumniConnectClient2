@@ -1,37 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Table, Card, Image } from "react-bootstrap";
 import { Box, Typography } from "@mui/material";
 import HeaderComponent from "../../components/common/HeaderComponent";
 import FooterComponent from "../../components/common/FooterComponent";
+import EventService from "../../services/EventService"; // Assuming the services are properly configured
+import UserJoinEventService from "../../services/UserJoinEventService";
 import "./EventDetailsPageV2.css";
 
 function EventDetailsPageV2() {
-  const eventDetails = {
-    img: "/assets/images/logo.png",
-    title: "Hội thảo Công Nghệ 2024",
-    description: "Hội thảo về xu hướng công nghệ mới trong năm 2024.",
-    location: "Trung tâm Hội nghị Quốc gia",
-    startDate: "11/20/2024",
-    endDate: "11/21/2024",
-    organizer: "Công ty Công nghệ XYZ",
-  };
+  const [eventDetails, setEventDetails] = useState(null);
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const eventId = 3; // Replace with dynamic ID if available
 
-  const feedbacks = [
-    {
-      user: "Nguyen Van A",
-      content: "Buổi hội thảo rất bổ ích, tôi đã học được nhiều điều mới.",
-      rating: 5,
-      createdBy: "user123",
-      createdAt: "11/20/2024",
-    },
-    {
-      user: "Tran Thi B",
-      content: "Chương trình được tổ chức tốt và thông tin rất phong phú.",
-      rating: 4,
-      createdBy: "user456",
-      createdAt: "11/20/2024",
-    },
-  ];
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        const event = await EventService.getEventById(eventId);
+        setEventDetails(event);
+        const feedbackResponse = await UserJoinEventService.viewAllUserJoinEvents(
+          { eventId }, // Filter object with EventId
+          { page: 1, pageSize: 10 } // Optional pagination parameters
+        );
+        setFeedbacks(feedbackResponse.items);
+        
+      } catch (error) {
+        console.error("Error fetching event details or feedback:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventDetails();
+  }, [eventId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!eventDetails) {
+    return <div>No event details available.</div>;
+  }
 
   return (
     <div className="d-flex flex-column min-vh-100">
@@ -44,12 +53,9 @@ function EventDetailsPageV2() {
                 {eventDetails.title}
               </Typography>
               <Row>
-                <Col
-                  md={3}
-                  className="d-flex align-items-center logo-container"
-                >
+                <Col md={3} className="d-flex align-items-center logo-container">
                   <Image
-                    src={eventDetails.img}
+                    src={eventDetails.img || "/assets/images/default-event.png"} // Fallback for missing image
                     alt="Event"
                     className="event-image"
                   />

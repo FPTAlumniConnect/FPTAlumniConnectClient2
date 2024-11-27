@@ -3,7 +3,9 @@ import { Form, Input, Button, DatePicker, Select, notification, InputNumber, Upl
 import { Layout, Row, Col } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import UserLayout from '../../layouts/UserLayout';
-
+import CVService from '../../services/CVService';
+import HeaderComponent from "../../components/common/HeaderComponent";
+import FooterComponent from "../../components/common/FooterComponent";
 const { TextArea } = Input;
 const { Option } = Select;
 const { Header, Content, Footer } = Layout;
@@ -12,19 +14,38 @@ const CVPage = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  // Handle form submission
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     setLoading(true);
-    console.log('CV đã được gửi: ', values);
-
-    setTimeout(() => {
-      setLoading(false);
+  
+    // Format the data for the backend
+    const formattedData = {
+      ...values,
+      birthday: values.birthday ? values.birthday.format('YYYY-MM-DD') : null,
+      startAt: values.startAt ? values.startAt.format('YYYY-MM-DD') : null,
+      endAt: values.endAt ? values.endAt.format('YYYY-MM-DD') : null,
+      userId: JSON.parse(sessionStorage.getItem('userInfo'))?.userId || 0, // Get userId from session
+    };
+  
+    try {
+      // Submit the formatted data using CVService
+      console.log(formattedData);
+      await CVService.createNewCV(formattedData);
       notification.success({
-        message: 'CV đã được gửi',
-        description: 'CV của bạn đã được gửi thành công.',
+        message: 'CV Sent',
+        description: 'Your CV has been submitted successfully.',
       });
-    }, 1000);
+      form.resetFields();
+    } catch (error) {
+      console.error('Error submitting CV:', error);
+      notification.error({
+        message: 'Submission Failed',
+        description: 'An error occurred while submitting your CV. Please try again.',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   // Handle file upload
   const handleFileChange = (info) => {
@@ -36,10 +57,12 @@ const CVPage = () => {
   };
 
   return (
-    <UserLayout>
+    <div className="d-flex flex-column min-vh-100">
+      <HeaderComponent />
+
       <Row justify="center" style={{ marginTop: '30px' }}>
         <Col span={16} style={{ background: '#fff', padding: '30px', borderRadius: '8px' }}>
-          <h2>Gửi CV của bạn</h2>
+          <h2>Nhập CV của bạn</h2>
           <Form
             form={form}
             layout="vertical"
@@ -235,7 +258,7 @@ const CVPage = () => {
               </Col>
 
               {/* File Upload (CV) */}
-              <Col span={12}>
+              {/* <Col span={12}>
                 <Form.Item
                   label="Tải lên CV"
                   name="cvFile"
@@ -258,7 +281,7 @@ const CVPage = () => {
                   </Upload>
                 </Form.Item>
                 
-              </Col>
+              </Col> */}
             </Row>
 
             {/* Submit Button */}
@@ -270,7 +293,10 @@ const CVPage = () => {
           </Form>
         </Col>
       </Row>
-    </UserLayout>
+
+
+      <FooterComponent />
+    </div>
   );
 };
 

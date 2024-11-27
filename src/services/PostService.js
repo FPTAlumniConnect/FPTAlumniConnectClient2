@@ -62,6 +62,7 @@ const updatePost = async (postId, postData) => {
 };
 
 // Export the functions for use in other modules
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   createPost,
   getPostById,

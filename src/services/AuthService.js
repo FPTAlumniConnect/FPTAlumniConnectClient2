@@ -1,24 +1,37 @@
-// services/AuthService.js
-import axios from 'axios';
+import ApiService from './ApiService'; // Import the configured ApiService
 
-// Replace with your ASP.NET Core API endpoint URL
-const API_BASE_URL = 'https://localhost:7168/api/v1/users';
-
+// Google Login
 export const handleGoogleLogin = async (token) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/login`, {
-      token: token,
+    const response = await ApiService.post('/users/login', {
+      token: token, // Adjust the payload as per your API contract
     });
 
-    if (response.status === 200) {
-      return response.data; // Return user data or token received from the API
-    } else {
-      throw new Error('Login failed. Unexpected response status.');
-    }
+    return response.data; // Return user data or token received from the API
   } catch (error) {
-    console.error('Error during Google login:', error);
-    throw error; // Rethrow to handle it in the calling component
+    console.error('Error during Google login:', error.response || error.message);
+    throw error; // Rethrow the error to handle it in the calling component
   }
 };
 
-export default handleGoogleLogin; // Export default for better usability
+// Email and Password Login
+export const handleEmailPasswordLogin = async (email, password) => {
+  try {
+    const response = await ApiService.post('/auth/login', {
+      email: email,
+      password: password,
+    });
+
+    return response.data; // Return user data or token received from the API
+  } catch (error) {
+    console.error('Error during login:', error.response || error.message);
+    throw error; // Rethrow the error to handle it in the calling component
+  }
+};
+
+// Export default object for usability
+// eslint-disable-next-line import/no-anonymous-default-export
+export default {
+  handleGoogleLogin,
+  handleEmailPasswordLogin,
+};

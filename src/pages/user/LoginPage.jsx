@@ -12,47 +12,69 @@ import {
 } from "@mui/material";
 import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
 import "./LoginPage.css";
-import { handleGoogleLogin } from "../../services/AuthService";
+import { handleGoogleLogin, handleEmailPasswordLogin } from "../../services/AuthService";
 
 const LoginPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
   // Handle Google login success
   const handleGoogleSuccess = async (credentialResponse) => {
-    const { credential } = credentialResponse; // Extract credential from the response
+    const { credential } = credentialResponse;
     try {
-      const response = await handleGoogleLogin(credential); // Use the auth service to handle login
+      const response = await handleGoogleLogin(credential);
       if (response.email) {
-        setSuccess("Login successful! Redirecting to home...");
-        setTimeout(() => {
-          navigate("/home"); // Navigate to home page after successful login
-        }, 2000);
+        setSuccess("Google login successful! Redirecting...");
+        setTimeout(() => navigate("/home"), 2000);
       } else {
         setError("Google login failed. Please try again.");
       }
-    } catch (error) {
-      setError(error.message || "Google login failed. Please try again.");
+    } catch (err) {
+      setError(err.message || "Google login failed. Please try again.");
     }
   };
 
-  const handleGoogleFailure = (error) => {
-    console.error("Google login failed:", error);
+  const handleGoogleFailure = () => {
     setError("Google login failed. Please try again.");
   };
 
-  const [showPassword, setShowPassword] = useState(false);
-
+  // Handle password visibility toggle
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
+  // Handle form submission for email/password login
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    try {
+      const response = await handleEmailPasswordLogin(email, password);
+      if (response.userInfo.email) {
+        // Save login info to sessionStorage
+        sessionStorage.setItem("accessToken", response.accessToken);
+        sessionStorage.setItem("userInfo", JSON.stringify(response.userInfo));
+  
+        setSuccess("Login successful! Redirecting...");
+        setTimeout(() => navigate("/"), 2000);
+      } else {
+        setError("Invalid email or password. Please try again.");
+      }
+    } catch (err) {
+      setError(err.message || "Login failed. Please try again.");
+    }
+  };
+
   return (
-    <GoogleOAuthProvider clientId="591480352874-.apps.googleusercontent.com">
-      <Box
-        className="login-page"
-        sx={{ display: "flex", height: "100vh", backgroundColor: "red" }}
-      >
+    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+      <Box className="login-page" sx={{ display: "flex", height: "100vh" }}>
+        {/* Left Section */}
         <Box
           sx={{
             flex: 1,
@@ -71,6 +93,7 @@ const LoginPage = () => {
           />
         </Box>
 
+        {/* Right Section */}
         <Box
           sx={{
             flex: 1,
@@ -87,9 +110,10 @@ const LoginPage = () => {
             Welcome to <span style={{ color: "#FFC107" }}>Alumni Connect</span>
           </Typography>
 
+          {/* Google Login */}
           <GoogleLogin
-            onSuccess={() => {}}
-            onError={() => {}}
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleFailure}
             render={(renderProps) => (
               <Button
                 variant="outlined"
@@ -110,101 +134,72 @@ const LoginPage = () => {
             )}
           />
 
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              width: "100%",
-              my: 2,
-              mt: 10,
-            }}
-          >
-            <Box
-              sx={{
-                flex: 1,
-                height: "1px",
-                bgcolor: "#ccc",
+          <Box sx={{ display: "flex", alignItems: "center", width: "100%", my: 2 }}>
+            <Box sx={{ flex: 1, height: "1px", bgcolor: "#ccc" }} />
+            <Typography sx={{ mx: 2, fontWeight: "bold", color: "#757575" }}>OR</Typography>
+            <Box sx={{ flex: 1, height: "1px", bgcolor: "#ccc" }} />
+          </Box>
+
+          {/* Email and Password Login */}
+          <form onSubmit={handleLoginSubmit} style={{ width: "100%" }}>
+            <TextField
+              fullWidth
+              label="Email"
+              variant="outlined"
+              margin="normal"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              type={showPassword ? "text" : "password"}
+              label="Password"
+              variant="outlined"
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              sx={{ mb: 1 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
-            <Typography
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", mb: 2 }}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Checkbox />
+                <Typography>Remember me</Typography>
+              </Box>
+              <Typography sx={{ color: "#1976d2", cursor: "pointer" }}>Forgot Password?</Typography>
+            </Box>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
               sx={{
-                mx: 2,
-                fontWeight: "bold",
-                color: "#757575",
+                mb: 2,
+                bgcolor: "#FFC107",
+                ":hover": { bgcolor: "#FFA000" },
+                textTransform: "none",
               }}
             >
-              OR
-            </Typography>
-            <Box
-              sx={{
-                flex: 1,
-                height: "1px",
-                bgcolor: "#ccc",
-              }}
-            />
-          </Box>
+              Login
+            </Button>
+          </form>
 
-          <TextField
-            fullWidth
-            label="Email"
-            variant="outlined"
-            margin="normal"
-            type="email"
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            type={showPassword ? "text" : "password"}
-            label="Password"
-            variant="outlined"
-            margin="normal"
-            sx={{ mb: 1 }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={togglePasswordVisibility} edge="end">
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-              mb: 2,
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Checkbox />
-              <Typography>Remember me</Typography>
-            </Box>
-            <Typography sx={{ color: "#1976d2", cursor: "pointer" }}>
-              Forgot Password?
-            </Typography>
-          </Box>
-
-          <Button
-            variant="contained"
-            fullWidth
-            sx={{
-              mb: 2,
-              bgcolor: "#FFC107",
-              ":hover": { bgcolor: "#FFA000" },
-              textTransform: "none",
-            }}
-          >
-            Login
-          </Button>
+          {/* Display Success or Error Message */}
+          {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
+          {success && <Typography color="success" sx={{ mt: 2 }}>{success}</Typography>}
 
           <Typography sx={{ mt: 10 }}>
             Don't have an account?{" "}
-            <span style={{ color: "#1976d2", cursor: "pointer" }}>
-              Register
-            </span>
+            <span style={{ color: "#1976d2", cursor: "pointer" }}>Register</span>
           </Typography>
         </Box>
       </Box>

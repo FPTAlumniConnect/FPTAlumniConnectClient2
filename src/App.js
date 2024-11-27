@@ -5,7 +5,6 @@ import "./App.css";
 import DashboardPage from "./pages/admin/DashboardPage";
 import UserPage from "./pages/admin/UserPage";
 import HomePage from "./pages/user/HomePage";
-import CreatePostPage from "./pages/user/CreatePostPage";
 import PostPage from "./pages/admin/PostPage";
 import MentorshipRequestPage from "./pages/admin/MentorshipRequestPage";
 import PostDetail from "./pages/user/PostDetail";
@@ -18,6 +17,7 @@ import EventDetailsPage from "./pages/user/EventDetailsPage";
 import UserJobPostPage from "./pages/user/UserJobPostPage";
 import UserJobPostDetailsPage from "./pages/user/UserJobPostDetailsPage";
 import CVPage from "./pages/user/CVPage";
+import CreatePostPage from "./pages/user/CreatePostPage";
 import CreateJobPostPage from "./pages/user/CreateJobPostPage";
 import CreateEventPage from "./pages/user/CreateEventPage";
 import LoginPage from "./pages/user/LoginPage";
@@ -40,7 +40,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/list-post" element={<ListPostPage />} />
         <Route path="/list-event" element={<ListEventPage />} />
-        <Route path="/post/:id" element={<PostDetailsPageV2 />} />
+        <Route path="/post/:postId" element={<PostDetailsPageV2 />} />
         <Route path="/mentor-dashboard" element={<MentorDashboardPage />} />
         <Route path="/mentor-requests" element={<MentorRequestListPage />} />
         <Route path="/request/:id" element={<RequestDetailPage />} />

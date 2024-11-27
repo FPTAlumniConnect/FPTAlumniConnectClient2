@@ -1,22 +1,46 @@
-import React, { useState } from "react";
-import { Container, Row, Col, Card, Pagination } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import { Box } from "@mui/material";
 import HeaderComponent from "../../components/common/HeaderComponent";
 import FooterComponent from "../../components/common/FooterComponent";
 import { Visibility, AccessTime, Person } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { PagingListItem } from "../../components/common/PagingListItem";
+import PostService from "../../services/PostService"; // Import PostService
+import UserService from "../../services/UserService"
 
 export const MainBodyListItem = ({ item, onClick }) => {
+  const [user, setUser] = useState(null);
+  
+  useEffect(() => {
+    // Fetch user data based on authId
+    const fetchUser = async (authorId) => {
+      try {
+        const userData = await UserService.getUser(authorId); 
+     
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    if (item.authorId) {
+      fetchUser(item.authorId);
+    }
+  }, [item.authorId]);
+
   const styles = {
     title: {
       cursor: "pointer",
     },
   };
+
   return (
     <Card className="mb-3 shadow-sm">
       <Card.Body>
-        <Card.Title onClick={onClick} className="text-primary" style={styles.title}>{item.title}</Card.Title>
+        <Card.Title onClick={onClick} className="text-primary" style={styles.title}>
+          {item.title}
+        </Card.Title>
         <Card.Text className="mb-1">{item.content}</Card.Text>
         <div className="d-flex justify-content-between text-muted">
           <span className="d-flex align-items-center">
@@ -26,7 +50,8 @@ export const MainBodyListItem = ({ item, onClick }) => {
             <AccessTime fontSize="small" className="me-1" /> {item.time}
           </span>
           <span className="d-flex align-items-center">
-            <Person fontSize="small" className="me-1" /> {item.user}
+            <Person fontSize="small" className="me-1" /> 
+            {user ? `${user.firstName} ${user.lastName}` : "Loading user..."}
           </span>
         </div>
       </Card.Body>
@@ -35,98 +60,71 @@ export const MainBodyListItem = ({ item, onClick }) => {
 };
 
 function ListPostPage() {
-  const posts = [
-    {
-      title: "Tiêu đề bài đăng 1",
-      content: "Nội dung tóm tắt 1",
-      views: "Số view 1",
-      time: "Thời gian đăng 1",
-      user: "Người đăng 1",
-    },
-    {
-      title: "Tiêu đề bài đăng 2",
-      content: "Nội dung tóm tắt 2",
-      views: "Số view 2",
-      time: "Thời gian đăng 2",
-      user: "Người đăng 2",
-    },
-    {
-      title: "Tiêu đề bài đăng 3",
-      content: "Nội dung tóm tắt 3",
-      views: "Số view 3",
-      time: "Thời gian đăng 3",
-      user: "Người đăng 3",
-    },
-    {
-      title: "Tiêu đề bài đăng 4",
-      content: "Nội dung tóm tắt 4",
-      views: "Số view 4",
-      time: "Thời gian đăng 4",
-      user: "Người đăng 4",
-    },
-    {
-      title: "Tiêu đề bài đăng 5",
-      content: "Nội dung tóm tắt 5",
-      views: "Số view 5",
-      time: "Thời gian đăng 5",
-      user: "Người đăng 5",
-    },
-    {
-      title: "Tiêu đề bài đăng 6",
-      content: "Nội dung tóm tắt 6",
-      views: "Số view 6",
-      time: "Thời gian đăng 6",
-      user: "Người đăng 6",
-    },
-    {
-      title: "Tiêu đề bài đăng 7",
-      content: "Nội dung tóm tắt 7",
-      views: "Số view 7",
-      time: "Thời gian đăng 7",
-      user: "Người đăng 7",
-    },
-    {
-      title: "Tiêu đề bài đăng 8",
-      content: "Nội dung tóm tắt 8",
-      views: "Số view 8",
-      time: "Thời gian đăng 8",
-      user: "Người đăng 8",
-    },
-    {
-      title: "Tiêu đề bài đăng 9",
-      content: "Nội dung tóm tắt 9",
-      views: "Số view 9",
-      time: "Thời gian đăng 9",
-      user: "Người đăng 9",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const itemsPerPage = 6;
-  const totalPages = Math.ceil(posts.length / itemsPerPage);
-  const currentItem = posts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+
+  const navigate = useNavigate();
+
+  // Fetch posts dynamically from the backend
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const filter = {}; // Add any filter criteria here
+        const pagingModel = {
+          page: currentPage,
+          size: itemsPerPage,
+        };
+        const response = await PostService.getAllPosts(filter, pagingModel);
+        setPosts(response.items); // Assuming the backend returns an `items` array
+        setTotalPages(response.totalPages); // Assuming `totalPages` is returned
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+        setError("Failed to load posts. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, [currentPage]);
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-  const navigate = useNavigate();
-  const handleShowPostDetail = () => {
-    navigate("/post/1")
-  }
+
+  const handleShowPostDetail = (postId) => {
+    navigate(`/post/${postId}`);
+  };
 
   return (
     <div className="d-flex flex-column min-vh-100">
       <HeaderComponent />
 
-      <Box sx={{backgroundColor: "#F7F7F7", py: 4 }}>
+      <Box sx={{ backgroundColor: "#F7F7F7", py: 4 }}>
         <Container>
-          <Row className="mb-4 justify-content-center" >
+          <Row className="mb-4 justify-content-center">
             <Col md={8}>
-              {currentItem.map((item, index) => (
-                <MainBodyListItem key={index} onClick={handleShowPostDetail} item={item} />
-              ))}
-              <PagingListItem handlePageChange={handlePageChange} currentPage={currentPage} totalPages={totalPages}/>
+              {loading && <p>Loading posts...</p>}
+              {error && <p className="text-danger">{error}</p>}
+              {!loading &&
+                !error &&
+                posts.map((item) => (
+                  <MainBodyListItem
+                    key={item.id}
+                    onClick={() => handleShowPostDetail(item.id)}
+                    item={item}
+                  />
+                ))}
+              <PagingListItem
+                handlePageChange={handlePageChange}
+                currentPage={currentPage}
+                totalPages={totalPages}
+              />
             </Col>
           </Row>
         </Container>
