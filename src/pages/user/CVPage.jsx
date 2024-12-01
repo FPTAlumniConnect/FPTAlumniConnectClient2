@@ -62,7 +62,7 @@ const CVPage = () => {
 
       <Row justify="center" style={{ marginTop: '30px' }}>
         <Col span={16} style={{ background: '#fff', padding: '30px', borderRadius: '8px' }}>
-          <h2>Nhập CV của bạn</h2>
+          <h2>Gửi CV của bạn</h2>
           <Form
             form={form}
             layout="vertical"
