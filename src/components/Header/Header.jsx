@@ -18,7 +18,7 @@ const headerStyle = {
 
 // Route to Vietnamese page name mapping
 const routeToVietnamese = {
-  '/': 'Trang Chủ',
+  '/': 'Cựu sinh viên Đại học FPT',
   '/login': 'Đăng Nhập',
   '/profile': 'Hồ Sơ Cá Nhân',
   '/register': 'Đăng Ký',
