@@ -39,7 +39,9 @@ const UserPage = () => {
     try {
       setLoading(true);
       const response = await UserService.getAllUsers({}, pagination);
-      setUsers(response.items);
+      const sortedUsers = response.items.sort((a, b) => a.userId - b.userId);
+
+      setUsers(sortedUsers);
     } catch (error) {
       message.error('Không thể tải danh sách người dùng');
     } finally {
@@ -174,13 +176,13 @@ const UserPage = () => {
             shape="circle"
             style={{ marginRight: 8 }}
           />
-          <Button
+          {/* <Button
             icon={<DeleteOutlined />}
             danger
             type="default"
             shape="circle"
             onClick={() => handleDeleteUser(user.userId)}
-          />
+          /> */}
         </>
       )
     }

@@ -17,8 +17,8 @@ const styles = {
   },
   banner: {
     position: 'relative',
-    height: '600px',
-    backgroundImage: 'url(https://i.imgur.com/kkwvJrz.png)',
+    height: '400px',
+    backgroundImage: 'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuOrDCo0T-MGKTujDOmjvFQUrPtjHuBI95QA&s)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     marginBottom: '40px',
@@ -100,11 +100,16 @@ function HomePage() {
           UserService.getAllUsers(),
         ]);
         const storedUserInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+        if (userInfo.roleName === 'Recruiter') {
+       
+          navigate('/my-job-post'); 
+        }
         if (storedUserInfo.userId) {
           const userData = await UserService.getUser(storedUserInfo.userId);
           setUserInfo(userData);
           sessionStorage.setItem('userInfo', JSON.stringify(userData));
         }
+
         setOriginalPosts(postsData.items);
         setOriginalEvents(eventsData.items);
         setOriginalJobs(jobsData.items);
@@ -191,24 +196,23 @@ function HomePage() {
 
   return (
     <UserLayout>
-      {userInfo && !userInfo.emailVerified && (
+       {userInfo && !userInfo.emailVerified && (
         <EmailVerificationStatus emailVerified={userInfo.emailVerified} />
       )}
       <div style={styles.banner}>
         <div style={styles.bannerOverlay}>
-
+       
           <Title level={1} style={{ color: 'white', marginBottom: '24px' }}>
-            Kết nối Cựu sinh viên{' '}
-            <span style={{ color: '#f05123' }}>Trường đại học FPT</span>
+            Kết nối Cựu sinh viên FPT
           </Title>
           <Text style={{ color: 'white', fontSize: '20px' }}>
-            Kết nối cộng đồng, tham gia sự kiện, tìm kiếm giải pháp, cơ hội việc làm.
+            +50,000 cựu sinh viên • 15 năm thành công
           </Text>
         </div>
       </div>
 
       <div style={styles.container}>
-        <div style={styles.searchSection}>
+      <div style={styles.searchSection}>
           <Title level={2}>Bạn đang tìm gì?</Title>
           <Input
             size="large"
@@ -223,18 +227,18 @@ function HomePage() {
         <div style={styles.leaderboardSection}>
           <Title level={3}>Cựu sinh viên xuất sắc</Title>
           <Row gutter={24}>
-            {outstandingAlumni.slice(0, 3).map((alumni) => (
+            {outstandingAlumni.slice(0,3).map((alumni) => (
               <Col span={8} key={alumni.userId}>
-                <Card
+                <Card 
                   hoverable
                   style={{ textAlign: 'center' }}
                   onClick={() => navigate(`/user/${alumni.userId}`)}
                 >
-                  <Avatar
-                    size={80}
+                  <Avatar 
+                    size={80} 
                     icon={<UserOutlined />}
                     src={alumni.profilePicture}
-                    style={{
+                    style={{ 
                       border: '2px solid #1890ff',
                       marginBottom: '16px'
                     }}
@@ -265,8 +269,8 @@ function HomePage() {
                     <EnvironmentOutlined /> {event.location}
                   </Space>
                   <Paragraph ellipsis={{ rows: 2 }}>{event.description}</Paragraph>
-                  <Button
-                    type="default"
+                  <Button 
+                    type="default" 
                     icon={<ArrowRightOutlined />}
                     onClick={() => handleViewEvent(event.eventId)}
                   >
@@ -287,8 +291,8 @@ function HomePage() {
                   <Tag color="blue">{job.location}</Tag>
                   <Tag color="green">{`${job.minSalary} - ${job.maxSalary} USD`}</Tag>
                   <Paragraph ellipsis={{ rows: 2 }}>{job.jobDescription}</Paragraph>
-                  <Button
-                    type="default"
+                  <Button 
+                    type="default" 
                     icon={<ArrowRightOutlined />}
                     onClick={() => handleViewJob(job.jobPostId)}
                   >
@@ -309,8 +313,8 @@ function HomePage() {
                 <Card key={post.postId} style={{ marginBottom: '16px' }}>
                   <Title level={4}>{post.title}</Title>
                   <Paragraph ellipsis={{ rows: 2 }}>{post.content}</Paragraph>
-                  <Button
-                    type="default"
+                  <Button 
+                    type="default" 
                     icon={<ArrowRightOutlined />}
                     onClick={() => handleViewPost(post.postId)}
                   >
