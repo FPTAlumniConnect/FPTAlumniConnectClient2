@@ -17,8 +17,8 @@ const styles = {
   },
   banner: {
     position: 'relative',
-    height: '400px',
-    backgroundImage: 'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuOrDCo0T-MGKTujDOmjvFQUrPtjHuBI95QA&s)',
+    height: '500px',
+    backgroundImage: 'url(https://i.imgur.com/t3kJBYa.png)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     marginBottom: '40px',
@@ -57,6 +57,9 @@ const styles = {
     marginBottom: '48px',
   },
   eventCard: {
+    border: '2px solid #f05123',
+    borderRadius: '8px',
+    padding: '16px',
     marginBottom: '16px',
     cursor: 'pointer',
     transition: 'all 0.3s',
@@ -65,6 +68,9 @@ const styles = {
     },
   },
   jobCard: {
+    border: '2px solid #f05123',
+    borderRadius: '8px',
+    padding: '16px',
     marginBottom: '16px',
   },
   networkSection: {
@@ -73,6 +79,9 @@ const styles = {
     marginBottom: '48px',
   },
   networkCard: {
+    border: '2px solid #f05123',
+    borderRadius: '8px',
+    padding: '16px',
     flex: 1,
     textAlign: 'center',
     padding: '24px',
@@ -101,8 +110,8 @@ function HomePage() {
         ]);
         const storedUserInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
         if (userInfo?.roleName === 'Recruiter') {
-       
-          navigate('/my-job-post'); 
+
+          navigate('/my-job-post');
         }
         if (storedUserInfo.userId) {
           const userData = await UserService.getUser(storedUserInfo.userId);
@@ -196,23 +205,23 @@ function HomePage() {
 
   return (
     <UserLayout>
-       {userInfo && !userInfo.emailVerified && (
+      {userInfo && !userInfo.emailVerified && (
         <EmailVerificationStatus emailVerified={userInfo.emailVerified} />
       )}
       <div style={styles.banner}>
         <div style={styles.bannerOverlay}>
-       
-          <Title level={1} style={{ color: 'white', marginBottom: '24px' }}>
+
+          <Title level={1} style={{ color: '#f05123', marginBottom: '24px' }}>
             Kết nối Cựu sinh viên FPT
           </Title>
-          <Text style={{ color: 'white', fontSize: '20px' }}>
-            +50,000 cựu sinh viên • 15 năm thành công
+          <Text style={{ color: '#f05123', fontSize: '20px' }}>
+            Diễn đàn - Sự kiện - Định hướng - Cơ hội
           </Text>
         </div>
       </div>
 
       <div style={styles.container}>
-      <div style={styles.searchSection}>
+        {/* <div style={styles.searchSection}>
           <Title level={2}>Bạn đang tìm gì?</Title>
           <Input
             size="large"
@@ -222,23 +231,23 @@ function HomePage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-        </div>
+        </div> */}
 
         <div style={styles.leaderboardSection}>
-          <Title level={3}>Cựu sinh viên xuất sắc</Title>
+          <Title level={3} style={{ color: '#f05123' }}>Cựu sinh viên xuất sắc</Title>
           <Row gutter={24}>
-            {outstandingAlumni.slice(0,3).map((alumni) => (
+            {outstandingAlumni.slice(0, 3).map((alumni) => (
               <Col span={8} key={alumni.userId}>
-                <Card 
+                <Card
                   hoverable
                   style={{ textAlign: 'center' }}
                   onClick={() => navigate(`/user/${alumni.userId}`)}
                 >
-                  <Avatar 
-                    size={80} 
+                  <Avatar
+                    size={80}
                     icon={<UserOutlined />}
                     src={alumni.profilePicture}
-                    style={{ 
+                    style={{
                       border: '2px solid #1890ff',
                       marginBottom: '16px'
                     }}
@@ -260,7 +269,7 @@ function HomePage() {
         <Row gutter={24}>
           <Col span={16}>
             <div style={styles.section}>
-              <Title level={3}>Sự kiện mới nhất</Title>
+              <Title level={3} style={{ color: '#f05123' }}>Sự kiện mới nhất</Title>
               {filteredEvents.slice(0, 3).map((event) => (
                 <Card key={event.eventId} style={styles.eventCard}>
                   <Title level={4}>{event.title}</Title>
@@ -269,8 +278,8 @@ function HomePage() {
                     <EnvironmentOutlined /> {event.location}
                   </Space>
                   <Paragraph ellipsis={{ rows: 2 }}>{event.description}</Paragraph>
-                  <Button 
-                    type="default" 
+                  <Button
+                    type="default"
                     icon={<ArrowRightOutlined />}
                     onClick={() => handleViewEvent(event.eventId)}
                   >
@@ -278,21 +287,26 @@ function HomePage() {
                   </Button>
                 </Card>
               ))}
-              <Button type="primary" onClick={handleViewAllEvents}>
+              <Button type="primary" style={{
+              backgroundColor: '#f05123',
+              border: '2px solid #f05123',
+              color: 'white',
+              fontWeight: 'bold'
+            }} onClick={handleViewAllEvents}>
                 Xem tất cả sự kiện
               </Button>
             </div>
 
             <div style={styles.section}>
-              <Title level={3}>Cơ hội việc làm</Title>
+              <Title level={3} style={{ color: '#f05123' }}>Cơ hội việc làm</Title>
               {filteredJobs.slice(0, 2).map((job) => (
                 <Card key={job.jobPostId} style={styles.jobCard}>
                   <Title level={4}>{job.jobTitle}</Title>
                   <Tag color="blue">{job.location}</Tag>
                   <Tag color="green">{`${job.minSalary} - ${job.maxSalary} USD`}</Tag>
                   <Paragraph ellipsis={{ rows: 2 }}>{job.jobDescription}</Paragraph>
-                  <Button 
-                    type="default" 
+                  <Button
+                    type="default"
                     icon={<ArrowRightOutlined />}
                     onClick={() => handleViewJob(job.jobPostId)}
                   >
@@ -300,7 +314,12 @@ function HomePage() {
                   </Button>
                 </Card>
               ))}
-              <Button type="primary" onClick={handleViewAllJobs}>
+              <Button type="primary" style={{
+              backgroundColor: '#f05123',
+              border: '2px solid #f05123',
+              color: 'white',
+              fontWeight: 'bold'
+            }} onClick={handleViewAllJobs}>
                 Xem tất cả công việc
               </Button>
             </div>
@@ -308,13 +327,13 @@ function HomePage() {
 
           <Col span={8}>
             <div style={styles.section}>
-              <Title level={3}>Bài viết mới nhất</Title>
+              <Title level={3} style={{ color: '#f05123' }}>Bài viết mới nhất</Title>
               {filteredPosts.slice(0, 5).map((post) => (
-                <Card key={post.postId} style={{ marginBottom: '16px' }}>
+                <Card key={post.postId} style={{ ...styles.networkCard, marginBottom: '16px' }}>
                   <Title level={4}>{post.title}</Title>
                   <Paragraph ellipsis={{ rows: 2 }}>{post.content}</Paragraph>
-                  <Button 
-                    type="default" 
+                  <Button
+                    type="default"
                     icon={<ArrowRightOutlined />}
                     onClick={() => handleViewPost(post.postId)}
                   >
@@ -322,7 +341,12 @@ function HomePage() {
                   </Button>
                 </Card>
               ))}
-              <Button type="primary" onClick={handleViewAllPosts}>
+              <Button type="primary" style={{
+              backgroundColor: '#f05123',
+              border: '2px solid #f05123',
+              color: 'white',
+              fontWeight: 'bold'
+            }} onClick={handleViewAllPosts}>
                 Xem tất cả bài viết
               </Button>
             </div>
@@ -330,19 +354,29 @@ function HomePage() {
         </Row>
         <div style={styles.networkSection}>
           <Card style={styles.networkCard}>
-            <Title level={3}>Kết nối với cựu sinh viên</Title>
+            <Title level={3} style={{ color: '#f05123' }}>Kết nối với cựu sinh viên</Title>
             <Paragraph>
               Tìm và kết nối với các cựu sinh viên FPT trong các ngành và địa điểm khác nhau.
             </Paragraph>
-            <Button type="primary">Tìm kiếm cựu sinh viên</Button>
+            <Button type="primary" style={{
+              backgroundColor: '#f05123',
+              border: '2px solid #f05123',
+              color: 'white',
+              fontWeight: 'bold'
+            }}>Tìm kiếm cựu sinh viên</Button>
           </Card>
 
           <Card style={styles.networkCard}>
-            <Title level={3}>Đóng góp</Title>
+            <Title level={3} style={{ color: '#f05123' }}>Đóng góp </Title>
             <Paragraph>
               Góp phần vào cộng đồng FPT qua việc cố vấn, diễn thuyết, hoặc tuyển dụng.
             </Paragraph>
-            <Button type="primary">Tham gia</Button>
+            <Button type="primary" style={{
+              backgroundColor: '#f05123',
+              border: '2px solid #f05123',
+              color: 'white',
+              fontWeight: 'bold'
+            }}>Tham gia</Button>
           </Card>
         </div>
       </div>

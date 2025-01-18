@@ -18,7 +18,7 @@ const headerStyle = {
 
 // Route to Vietnamese page name mapping
 const routeToVietnamese = {
-  '/': 'Trang Chủ',
+  '/': 'FPT Alumni Connect',
   '/login': 'Đăng Nhập',
   '/profile': 'Hồ Sơ Cá Nhân',
   '/register': 'Đăng Ký',
@@ -67,7 +67,7 @@ const getDynamicTitle = (path) => {
     return `Chi Tiết Ứng Viên (${eventId})`;
   }
  
-  return routeToVietnamese[path] || 'Trang Không Tìm Thấy';
+  return routeToVietnamese[path] || 'Yêu cầu hướng dẫn';
 };
 
 const HeaderComponent = () => {
