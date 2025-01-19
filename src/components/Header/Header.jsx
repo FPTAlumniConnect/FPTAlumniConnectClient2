@@ -67,7 +67,7 @@ const getDynamicTitle = (path) => {
     return `Chi Tiết Ứng Viên (${eventId})`;
   }
  
-  return routeToVietnamese[path] || 'Yêu cầu hướng dẫn';
+  return routeToVietnamese[path] || 'Lịch Hẹn';
 };
 
 const HeaderComponent = () => {
